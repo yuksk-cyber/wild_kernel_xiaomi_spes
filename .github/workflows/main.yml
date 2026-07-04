@@ -37,7 +37,7 @@ jobs:
         echo "============================================="
         echo "          STARTING WILD KERNEL BUILD         "
         echo "============================================="
-        curl -LSs "https://github.com/KernelSU-Next/KernelSU-Next/blob/dev/kernel/setup.sh" | bash -s main
+        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s main
 
         make O=out vendor/spes-perf_defconfig CC=clang HOSTCC=clang
         
