@@ -38,7 +38,7 @@ jobs:
         echo "          STARTING WILD KERNEL BUILD         "
         echo "============================================="
         
-        make O=out spes-perf_defconfig CC=clang HOSTCC=clang
+        make O=out vendor/spes-perf_defconfig CC=clang HOSTCC=clang
         
         make -j$(nproc --all) O=out \
                       CC=clang \
