@@ -40,11 +40,12 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
 
         make O=out vendor/spes-perf_defconfig CC=clang HOSTCC=clang
-        echo "CONFIG_KSU=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_KSU_NEXT=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_KPROBES=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_HAVE_KPROBES=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_KPROBE_EVENTS=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
+        echo "CONFIG_MODULES=y" >> out/.config
+        echo "CONFIG_KPROBES=y" >> out/.config
+        echo "CONFIG_HAVE_KPROBES=y" >> out/.config
+        echo "CONFIG_KPROBE_EVENTS=y" >> out/.config
+        echo "CONFIG_KSU=y" >> out/.config
+        echo "CONFIG_KSU_NEXT=y" >> out/.config
         make O=out olddefconfig CC=clang HOSTCC=clang
         
         make -j$(nproc --all) O=out \
