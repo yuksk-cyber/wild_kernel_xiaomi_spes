@@ -40,6 +40,7 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s main
 
         make O=out vendor/spes-perf_defconfig CC=clang HOSTCC=clang
+        make O=out olddefconfig CC=clang HOSTCC=clang
         
         make -j$(nproc --all) O=out \
                       CC=clang \
