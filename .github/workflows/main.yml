@@ -11,7 +11,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: 'recursive'
-        fetch-depth: 1
+        fetch-depth: 0
 
     - name: Set up Build Environment
       run: |
@@ -37,7 +37,7 @@ jobs:
         echo "============================================="
         echo "          STARTING WILD KERNEL BUILD         "
         echo "============================================="
-        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s next
+        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
 
         make O=out vendor/spes-perf_defconfig CC=clang HOSTCC=clang
         echo "CONFIG_KSU=y" >> out/.config
