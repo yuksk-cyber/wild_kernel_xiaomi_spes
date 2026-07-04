@@ -37,7 +37,7 @@ jobs:
         echo "============================================="
         echo "          STARTING WILD KERNEL BUILD         "
         echo "============================================="
-        sed -i 's/scm_version()/scm_version() {\n\treturn\n}/' scripts/setlocalversion
+        sed -i 's/local short/return 0/g' scripts/setlocalversion
 
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
 
