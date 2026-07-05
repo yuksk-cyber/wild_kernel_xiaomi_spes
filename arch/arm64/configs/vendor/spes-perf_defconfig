@@ -685,7 +685,7 @@ CONFIG_THINLTO=y
 CONFIG_UID_SYS_STATS=y
 
 # Memory tweaks
-# CONFIG_KSM is not set
+CONFIG_KSM=y
 
 # Usb (Rmnet)
 CONFIG_USB_F_GSI=y
