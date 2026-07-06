@@ -1,16 +1,15 @@
 name: Update CIP Kernel Version
-
 on:
-  workflow_dispatch: # Будешь запускать вручную из вкладки Actions
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
     runs-on: ubuntu-22.04
-    permissions:
-      contents: write # Нужно, чтобы бот мог сделать push
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.MY_PAT }}
@@ -19,9 +18,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Reset to Clean State
+        run: |
           git reset --hard bde139d2d3d968834c38ae905539a2ab34b2be0e
 
-          
       - name: Push Updates
         run: |
-          git push origin HEAD:main-a16-sm8250-base # Замени 'main' на имя своей ветки, если оно другое
+          # ПУШИМ ТОЛЬКО ЯДРО, НЕ ТРОГАЯ ВОРКФЛОУ
+          git push -f origin HEAD:main-a16-sm8250-base
