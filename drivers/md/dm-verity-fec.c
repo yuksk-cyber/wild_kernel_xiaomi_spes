@@ -719,7 +719,7 @@ int verity_fec_ctr(struct dm_verity *v)
 	init_completion(&f->kobj_holder.completion);
 
 	r = kobject_init_and_add(&f->kobj_holder.kobj, &fec_ktype,
-				 &disk_to_dev(dm_disk(md))->kobj, "%s", "fec");
+				 &disk_to_dev(dm_disk(dm_table_get_md(v->ti->table)))->kobj, "%s", "fec");
 	if (r) {
 		ti->error = "Cannot create kobject";
 		return r;
