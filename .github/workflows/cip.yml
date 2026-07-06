@@ -1,0 +1,32 @@
+name: Update CIP Kernel Version
+
+on:
+  workflow_dispatch: # Будешь запускать вручную из вкладки Actions
+
+jobs:
+  update:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write # Нужно, чтобы бот мог сделать push
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge CIP Upstream
+        run: |
+          git remote add cip-upstream https://git.kernel.org/pub/scm/linux/kernel/git/cip/linux-cip.git
+          git fetch cip-upstream linux-4.19.y-cip
+          # Мерджим и сразу делаем коммит
+          git merge cip-upstream/linux-4.19.y-cip --no-edit
+          
+      - name: Push Updates
+        run: |
+          git push origin HEAD:main-a16-sm8250-base # Замени 'main' на имя своей ветки, если оно другое
