@@ -581,5 +581,13 @@ extern unsigned long erofs_shrink_scan(struct shrinker *shrink,
 #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
 #endif
 
+#ifndef EROFS_V
+#define EROFS_V(ptr) EROFS_I(ptr)
+#endif
+
+#ifndef EROFS_I
+#define EROFS_I(ptr) EROFS_V(ptr)
+#endif
+
 #endif
 
