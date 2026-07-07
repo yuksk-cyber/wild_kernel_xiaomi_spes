@@ -1,6 +1,8 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
  * A tagged pointer implementation
+ *
+ * Copyright (C) 2018 Gao Xiang <gaoxiang25@huawei.com>
  */
 #ifndef __EROFS_FS_TAGPTR_H
 #define __EROFS_FS_TAGPTR_H
