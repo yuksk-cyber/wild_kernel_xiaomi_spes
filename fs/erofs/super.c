@@ -11,6 +11,7 @@
 #include <linux/seq_file.h>
 #include <linux/cleancache.h>
 #include "xattr.h"
+#include "internal.h"
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/erofs.h>
