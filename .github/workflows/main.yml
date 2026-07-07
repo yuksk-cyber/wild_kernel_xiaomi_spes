@@ -59,7 +59,7 @@ jobs:
                       OBJCOPY=llvm-objcopy \
                       OBJDUMP=llvm-objdump \
                       STRIP=llvm-strip \
-                      KCFLAGS="-O3 -pipe"
+                      KCFLAGS="-O2 -pipe"
         
         echo "============================================="
         echo "          CHECKING KERNEL OUTPUT             "
