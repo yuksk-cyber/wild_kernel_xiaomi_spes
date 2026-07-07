@@ -13,7 +13,7 @@
 #ifndef __EROFS_UNZIP_PAGEVEC_H
 #define __EROFS_UNZIP_PAGEVEC_H
 
-#include <linux/tagptr.h>
+#include "include/linux/tagptr.h"
 
 /* page type in pagevec for unzip subsystem */
 enum z_erofs_page_type {
