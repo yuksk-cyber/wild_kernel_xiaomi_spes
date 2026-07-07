@@ -7,7 +7,13 @@
 
 #include <linux/tracepoint.h>
 #include <linux/fs.h>
-#include <fs/erofs/internal.h>
+
+struct erofs_inode; 
+struct erofs_sb_info;
+
+#ifndef EROFS_I
+#define EROFS_I(ptr) container_of(ptr, struct erofs_inode, vfs_inode)
+#endif
 
 struct erofs_map_blocks;
 
