@@ -7,6 +7,7 @@
 
 #include <linux/tracepoint.h>
 #include <linux/fs.h>
+#include <fs/erofs/internal.h>
 
 struct erofs_map_blocks;
 
