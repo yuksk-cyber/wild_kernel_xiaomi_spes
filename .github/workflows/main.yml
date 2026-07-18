@@ -1,7 +1,13 @@
-name: Build Wild Kernel
+name: Build Kernel
 
 on:
   workflow_dispatch:
+
+env:
+  DEFCONFIG: spes-perf_defconfig
+  ARCH: arm64
+  SUBARCH: arm64
+  KERNEL_NAME: Wild-Kernel
 
 jobs:
   build:
@@ -27,12 +33,13 @@ jobs:
 
     - name: Build Kernel
       run: |
-        export PATH="$(pwd)/clang/bin:$PATH"
-        export ARCH=arm64
-        export SUBARCH=arm64
+        CLANG_DIR="$(pwd)/clang"
+        export PATH="$CLANG_DIR/bin:$PATH"
+        export ARCH=${{ env.ARCH }}
+        export SUBARCH=${{ env.SUBARCH }}
         
         echo "============================================="
-        echo "          STARTING WILD KERNEL BUILD         "
+        echo "          STARTING KERNEL BUILD              "
         echo "============================================="
         sed -i 's/local short/return 0/g' scripts/setlocalversion
 
@@ -40,15 +47,17 @@ jobs:
 
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
 
-        echo "CONFIG_MODULES=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_KSU=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
-        echo "CONFIG_KSU_NEXT=y" >> arch/arm64/configs/vendor/spes-perf_defconfig
+        echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         
-        make O=out vendor/spes-perf_defconfig LLVM=1 LLVM_IAS=1
-        make O=out olddefconfig LLVM=1 LLVM_IAS=1
+        make O=out ${{ env.DEFCONFIG }} CC=clang HOSTCC=clang
+        make O=out olddefconfig CC=clang HOSTCC=clang
         
         make -j$(nproc --all) O=out \
+                      CC=clang \
+                      HOSTCC=clang \
                       LLVM=1 \
                       LLVM_IAS=1 \
                       KCFLAGS="-O2 -pipe" \
@@ -60,33 +69,15 @@ jobs:
         
         mkdir -p build_artifacts
 
-        if [ -f out/arch/arm64/boot/Image.gz-dtb ]; then
-          echo "FOUND: Image.gz-dtb"
-          cp out/arch/arm64/boot/Image.gz-dtb ./build_artifacts/Image.gz-dtb
-        fi
+        find out/arch/${{ env.ARCH }}/boot/ -maxdepth 1 -type f \( -name "Image*" -o -name "*.img" \) -exec cp {} ./build_artifacts/ \;
 
-        if [ -f out/arch/arm64/boot/Image.gz ]; then
-          echo "FOUND: Image.gz"
-          cp out/arch/arm64/boot/Image.gz ./build_artifacts/Image.gz
-        fi
-
-        if [ -f out/arch/arm64/boot/dtb.img ]; then
-          echo "FOUND: dtb.img"
-          cp out/arch/arm64/boot/dtb.img ./build_artifacts/dtb.img
-        fi
-
-        if [ -f out/arch/arm64/boot/dtbo.img ]; then
-          echo "FOUND: dtbo.img"
-          cp out/arch/arm64/boot/dtbo.img ./build_artifacts/dtbo.img
-        fi
-
-        if [ ! -f ./build_artifacts/Image.gz ] && [ ! -f ./build_artifacts/Image.gz-dtb ]; then
-          echo "ERROR: Kernel image not found!"
+        if [ -z "$(ls -A build_artifacts)" ]; then
+          echo "ERROR: No kernel artifacts found! Build failed."
           exit 1
         fi
 
     - name: Upload Kernel Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Wild-Kernel-Artifacts
+        name: ${{ env.KERNEL_NAME }}-Artifacts
         path: build_artifacts/*
