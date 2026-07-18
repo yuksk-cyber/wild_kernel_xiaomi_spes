@@ -49,7 +49,10 @@ jobs:
         
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
-        
+        echo "CONFIG_TASKS_RCU_GENERIC=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_TASKS_RCU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_TASKS_RUDE_RCU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_TASKS_TRACE_RCU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
@@ -62,14 +65,8 @@ jobs:
         
         make -j$(nproc --all) O=out \
                       CC=clang \
-                      CLANG_TRIPLE=aarch64-linux-gnu- \
-                      HOSTCC=clang \
-                      LD=ld.lld \
-                      AR=llvm-ar \
-                      NM=llvm-nm \
-                      OBJCOPY=llvm-objcopy \
-                      OBJDUMP=llvm-objdump \
-                      STRIP=llvm-strip \
+                      LLVM=1 \
+                      LLVM_IAS=1 \
                       KCFLAGS="-O2 -pipe" \
                       all
         
