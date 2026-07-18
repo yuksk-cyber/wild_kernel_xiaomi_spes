@@ -62,7 +62,7 @@ jobs:
                       OBJCOPY=llvm-objcopy \
                       OBJDUMP=llvm-objdump \
                       STRIP=llvm-strip \
-                      KCFLAGS="-O2 -pipe"
+                      KCFLAGS="-O2 -pipe -fgnu89-inline" \
         
         echo "============================================="
         echo "          COLLECTING ALL COMPILED FILES      "
