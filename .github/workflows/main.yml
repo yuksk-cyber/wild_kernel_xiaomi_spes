@@ -37,28 +37,22 @@ jobs:
         export PATH="$CLANG_BIN:$PATH"
         export ARCH=${{ env.ARCH }}
         export SUBARCH=${{ env.SUBARCH }}
+        export CROSS_COMPILE=aarch64-linux-gnu-
+        export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
         
         echo "============================================="
         echo "          STARTING KERNEL BUILD              "
         echo "============================================="
         sed -i 's/local short/return 0/g' scripts/setlocalversion
-
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
-
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
-
-        sed -i 's/config COMPAT_VDSO/config COMPAT_VDSO\n\tdepends on BROKEN/g' arch/arm64/Kconfig
-        sed -i 's/Config COMPAT_VDSO/Config COMPAT_VDSO\n\tdepends on BROKEN/g' arch/arm64/Kconfig
-
         echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_COMPAT_VDSO=n" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        
         make O=out ${{ env.DEFCONFIG }} CC=clang HOSTCC=clang LD=ld.lld
         make O=out olddefconfig CC=clang HOSTCC=clang LD=ld.lld
-        
         make -j$(nproc --all) O=out \
                       CC=clang \
                       HOSTCC=clang \
@@ -68,8 +62,11 @@ jobs:
                       OBJCOPY=llvm-objcopy \
                       OBJDUMP=llvm-objdump \
                       STRIP=llvm-strip \
-                      LLVM=1 \
-                      LLVM_IAS=1 \
+                      OBJSIZE=llvm-size \
+                      READELF=llvm-readelf \
+                      HOSTLD=ld.lld \
+                      HOSTAR=llvm-ar \
+                      KCFLAGS="-O2 -pipe" \
                       all
         
         echo "============================================="
