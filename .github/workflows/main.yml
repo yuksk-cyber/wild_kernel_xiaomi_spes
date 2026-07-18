@@ -51,7 +51,7 @@ jobs:
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        
+        echo "CONFIG_COMPAT_VDSO=n" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         make O=out ${{ env.DEFCONFIG }} CC=clang LD=ld.lld
         make O=out olddefconfig CC=clang LD=ld.lld
         
