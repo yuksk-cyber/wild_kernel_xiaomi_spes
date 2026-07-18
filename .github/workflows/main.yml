@@ -48,7 +48,6 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
 
         sed -i 's/config COMPAT_VDSO/config COMPAT_VDSO\n\tdepends on BROKEN/g' arch/arm64/Kconfig
-        sed -i '/config COMPAT_VDSO/,/default y/s/default y/default n/' arch/arm64/Kconfig
 
         echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
