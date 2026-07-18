@@ -62,12 +62,7 @@ jobs:
                       OBJCOPY=llvm-objcopy \
                       OBJDUMP=llvm-objdump \
                       STRIP=llvm-strip \
-                      OBJSIZE=llvm-size \
-                      READELF=llvm-readelf \
-                      HOSTLD=ld.lld \
-                      HOSTAR=llvm-ar \
-                      KCFLAGS="-O2 -pipe" \
-                      all
+                      KCFLAGS="-O2 -pipe"
         
         echo "============================================="
         echo "          COLLECTING ALL COMPILED FILES      "
