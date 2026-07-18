@@ -22,7 +22,8 @@ jobs:
     - name: Set up Build Environment
       run: |
         sudo apt-get update
-        sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf lib32readline-dev lib32z1-dev lz4 libncurses5-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 libelf-dev lld llvm
+        # ДОБАВЛЕНЫ: gcc-aarch64-linux-gnu и gcc-arm-linux-gnueabi в конец списка
+        sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf lib32readline-dev lib32z1-dev lz4 libncurses5-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 libelf-dev lld llvm gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
 
     - name: Download Cirrus Clang Toolchain
       run: |
@@ -44,18 +45,23 @@ jobs:
         echo "          STARTING KERNEL BUILD              "
         echo "============================================="
         sed -i 's/local short/return 0/g' scripts/setlocalversion
+        
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
+        
         echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_COMPAT_VDSO=n" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        
+        # Передаем CLANG_TRIPLE, чтобы defconfig собрался под ARM64, а не под x86 сервера
         make O=out ${{ env.DEFCONFIG }} CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LD=ld.lld
         make O=out olddefconfig CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LD=ld.lld
-
+        
         make -j$(nproc --all) O=out \
                       CC=clang \
+                      CLANG_TRIPLE=aarch64-linux-gnu- \
                       HOSTCC=clang \
                       LD=ld.lld \
                       AR=llvm-ar \
@@ -63,7 +69,8 @@ jobs:
                       OBJCOPY=llvm-objcopy \
                       OBJDUMP=llvm-objdump \
                       STRIP=llvm-strip \
-                      KCFLAGS="-O2 -pipe -fgnu89-inline" \
+                      KCFLAGS="-O2 -pipe" \
+                      all
         
         echo "============================================="
         echo "          COLLECTING ALL COMPILED FILES      "
