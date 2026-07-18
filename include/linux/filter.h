@@ -28,6 +28,7 @@
 #include <asm/byteorder.h>
 #include <uapi/linux/filter.h>
 #include <uapi/linux/bpf.h>
+#include <linux/compat.h>
 
 struct sk_buff;
 struct sock;
