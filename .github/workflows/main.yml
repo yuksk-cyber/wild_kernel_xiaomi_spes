@@ -51,8 +51,9 @@ jobs:
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_COMPAT_VDSO=n" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        make O=out ${{ env.DEFCONFIG }} CC=clang HOSTCC=clang LD=ld.lld
-        make O=out olddefconfig CC=clang HOSTCC=clang LD=ld.lld
+        make O=out ${{ env.DEFCONFIG }} CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LD=ld.lld
+        make O=out olddefconfig CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LD=ld.lld
+
         make -j$(nproc --all) O=out \
                       CC=clang \
                       HOSTCC=clang \
