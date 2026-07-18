@@ -7,7 +7,7 @@ env:
   DEFCONFIG: spes-perf_defconfig
   ARCH: arm64
   SUBARCH: arm64
-  KERNEL_NAME: Wild-Kernel
+  KERNEL_NAME: Wild Kernel
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
         rm Clang-16.0.6-20260716.tar.gz
         cd ..
 
-    - name: Build Kernel
+    - name: Build ${{ env.KERNEL_NAME }}
       run: |
         CLANG_BIN=$(find $(pwd)/clang -type d -name "bin" | head -n 1)
         export PATH="$CLANG_BIN:$PATH"
@@ -49,19 +49,13 @@ jobs:
         
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/legacy/kernel/setup.sh" | bash -s legacy
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
-        echo "CONFIG_TASKS_RCU_GENERIC=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        echo "CONFIG_TASKS_RCU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        echo "CONFIG_TASKS_RUDE_RCU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        echo "CONFIG_TASKS_TRACE_RCU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        echo "CONFIG_COMPAT_VDSO=n" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         
-        # Передаем CLANG_TRIPLE, чтобы defconfig собрался под ARM64, а не под x86 сервера
-        make O=out ${{ env.DEFCONFIG }} CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LD=ld.lld
-        make O=out olddefconfig CC=clang CLANG_TRIPLE=aarch64-linux-gnu- LD=ld.lld
+        make O=out ${{ env.DEFCONFIG }} CC=clang LD=ld.lld
+        make O=out olddefconfig CC=clang LD=ld.lld
         
         make -j$(nproc --all) O=out \
                       CC=clang \
