@@ -49,21 +49,19 @@ jobs:
         echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        make O=out ${{ env.DEFCONFIG }} CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- LD=ld.lld
-        make O=out olddefconfig CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- LD=ld.lld
+        make O=out ${{ env.DEFCONFIG }} CC=clang LD=ld.lld
+        make O=out olddefconfig CC=clang LD=ld.lld
         
         make -j$(nproc --all) O=out \
                       CC=clang \
-                      CLANG_TRIPLE=aarch64-linux-gnu- \
-                      CROSS_COMPILE=aarch64-linux-gnu- \
+                      HOSTCC=clang \
                       LD=ld.lld \
                       AR=llvm-ar \
                       NM=llvm-nm \
                       OBJCOPY=llvm-objcopy \
                       OBJDUMP=llvm-objdump \
                       STRIP=llvm-strip \
-                      KCFLAGS="-O2 -pipe" \
-                      all
+                      KCFLAGS="-O2 -pipe"
         
         echo "============================================="
         echo "          COLLECTING ALL COMPILED FILES      "
