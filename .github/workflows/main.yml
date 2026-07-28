@@ -1,4 +1,4 @@
-name: Build Kernel
+name: Build Chrysalis Kernel
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ env:
   DEFCONFIG: vendor/spes-perf_defconfig
   ARCH: arm64
   SUBARCH: arm64
-  KERNEL_NAME: Wild Kernel
+  KERNEL_NAME: Chrysalis Kernel
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
         tar -xf 16.0.6-20260716-release.tar.gz --strip-components=1
         cd ..
 
-    - name: Build ${{ env.KERNEL_NAME }}
+    - name: Build Chrysalis Kernel
       run: |
         CLANG_BIN=$(find $(pwd)/clang -type d -name "bin" | head -n 1)
         export PATH="$CLANG_BIN:$PATH"
