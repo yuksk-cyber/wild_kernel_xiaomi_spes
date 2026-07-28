@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  DEFCONFIG: spes-perf_defconfig
+  DEFCONFIG: vendor/spes-perf_defconfig
   ARCH: arm64
   SUBARCH: arm64
   KERNEL_NAME: Wild Kernel
