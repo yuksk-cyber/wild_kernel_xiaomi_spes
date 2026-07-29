@@ -37,8 +37,8 @@ jobs:
         CLANG_BIN=$(find $(pwd)/clang -type d -name "bin" | head -n 1)
         
         ln -sf "$CLANG_BIN/lld" "$CLANG_BIN/ld.lld"
-        
-        echo "$CLANG_BIN" >> $GITHUB_PATH
+        sudo ln -sf "$CLANG_BIN/lld" /usr/local/bin/ld.lld
+        sudo ln -sf "$CLANG_BIN/lld" /usr/bin/ld.lld
         
         export PATH="$CLANG_BIN:$PATH"
         export ARCH=${{ env.ARCH }}
