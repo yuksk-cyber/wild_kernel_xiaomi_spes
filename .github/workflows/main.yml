@@ -52,8 +52,8 @@ jobs:
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_TAMPER_SYSCALL_TABLE=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_NOMOUNT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        make O=out ${{ env.DEFCONFIG }} CC=clang LD=ld.lld
-        make O=out olddefconfig CC=clang LD=ld.lld
+        make O=out ${{ env.DEFCONFIG }} CC=clang
+        make O=out olddefconfig CC=clang
         
         make -j$(nproc --all) O=out \
                       CC=clang \
