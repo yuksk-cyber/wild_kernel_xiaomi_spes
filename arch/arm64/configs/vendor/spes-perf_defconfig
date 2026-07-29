@@ -705,6 +705,9 @@ CONFIG_HZ_300=y
 CONFIG_JUMP_LABEL=y
 CONFIG_VMAP_STACK=y
 
+#NoMount
+CONFIG_NOMOUNT=y
+
 # Kernel configurations for full DroidSpaces support
 # Copyright (C) 2026 ravindu644 <droidcasts@protonmail.com>
 
