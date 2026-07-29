@@ -34,13 +34,10 @@ jobs:
 
     - name: Build Chrysalis Kernel
       run: |
-        CLANG_BIN=$(find $(pwd)/clang -type d -name "bin" | head -n 1)
-        
+        CLANG_BIN=$(readlink -f $(find $(pwd)/clang -type d -name "bin" | head -n 1))
         ln -sf "$CLANG_BIN/lld" "$CLANG_BIN/ld.lld"
-        sudo ln -sf "$CLANG_BIN/lld" /usr/local/bin/ld.lld
-        sudo ln -sf "$CLANG_BIN/lld" /usr/bin/ld.lld
+        sudo cp -rs $CLANG_BIN/* /usr/bin/
         
-        export PATH="$CLANG_BIN:$PATH"
         export ARCH=${{ env.ARCH }}
         export SUBARCH=${{ env.SUBARCH }}
         
