@@ -1,0 +1,48 @@
+name: Apply NoMount Patch
+
+on:
+  workflow_dispatch: # Запуск вручную из вкладки Actions
+
+jobs:
+  apply-patch:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Права на отправку коммитов в репозиторий
+
+    steps:
+      - name: Checkout Kernel Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download NoMount Patch
+        run: |
+          echo "Скачиваем патч NoMount 4.19..."
+          curl -sSL "https://raw.githubusercontent.com/maxsteeel/nomount/master/kernel/patches/nomount_4.19_kernel_integration.patch" -o nomount_4.19.patch
+
+      - name: Apply Patch
+        run: |
+          # Проверяем, применится ли патч без ошибок
+          if git apply --check nomount_4.19.patch; then
+            git apply nomount_4.19.patch
+            rm nomount_4.19.patch  # Удаляем сам файл патча перед коммитом
+            echo "Патч успешно применен!"
+          else
+            echo "Ошибка: патч не может быть применен к текущему исходному коду."
+            exit 1
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          if git diff --staged --quiet; then
+            echo "Изменений для коммита не обнаружено."
+          else
+            git commit -m "fs: integrate NoMount 4.19 path redirection subsystem"
+            git push
+          fi
