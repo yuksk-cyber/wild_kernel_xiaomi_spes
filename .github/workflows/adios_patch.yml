@@ -21,7 +21,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           echo "Processing patch..."
-          patch -p1 --ignore-whitespace < adios_4.19.patch || {
+          patch --3way --ignore-whitespace --recount < adios_4.19.patch || {
             echo "Error"
             find . -name "*.rej" -exec echo "--- {} ---" \; -exec cat {} \;
             exit 1
