@@ -35,7 +35,11 @@ jobs:
     - name: Build Chrysalis Kernel
       run: |
         CLANG_BIN=$(find $(pwd)/clang -type d -name "bin" | head -n 1)
+        
         ln -sf "$CLANG_BIN/lld" "$CLANG_BIN/ld.lld"
+        
+        echo "$CLANG_BIN" >> $GITHUB_PATH
+        
         export PATH="$CLANG_BIN:$PATH"
         export ARCH=${{ env.ARCH }}
         export SUBARCH=${{ env.SUBARCH }}
@@ -53,19 +57,23 @@ jobs:
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_TAMPER_SYSCALL_TABLE=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_NOMOUNT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        make O=out ${{ env.DEFCONFIG }} CC=clang
-        make O=out olddefconfig CC=clang
+        make O=out ${{ env.DEFCONFIG }}
+        make O=out olddefconfig
         
         make -j$(nproc --all) O=out \
-                      CC=clang \
-                      HOSTCC=clang \
-                      LD=ld.lld \
-                      AR=llvm-ar \
-                      NM=llvm-nm \
-                      OBJCOPY=llvm-objcopy \
-                      OBJDUMP=llvm-objdump \
-                      STRIP=llvm-strip \
-                      KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2"
+              ARCH=arm64 \
+              CC=clang \
+              HOSTCC=clang \
+              HOSTLD=ld \
+              LD=ld.lld \
+              AR=llvm-ar \
+              NM=llvm-nm \
+              OBJCOPY=llvm-objcopy \
+              OBJDUMP=llvm-objdump \
+              STRIP=llvm-strip \
+              CLANG_TRIPLE=aarch64-linux-gnu- \
+              CROSS_COMPILE=aarch64-linux-android- \
+              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2"
         
         echo "============================================="
         echo "          COLLECTING ALL COMPILED FILES      "
