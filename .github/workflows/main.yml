@@ -59,7 +59,7 @@ jobs:
               ARCH=arm64 \
               CC=clang \
               HOSTCC=clang \
-              LD=ld.lld \
+              HOSTLD=ld \
               AR=llvm-ar \
               NM=llvm-nm \
               OBJCOPY=llvm-objcopy \
@@ -67,7 +67,7 @@ jobs:
               STRIP=llvm-strip \
               CLANG_TRIPLE=aarch64-linux-gnu- \
               CROSS_COMPILE=aarch64-linux-gnu- \
-              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2"
+              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O3"
         
         mkdir -p build_artifacts
         find out/arch/${{ env.ARCH }}/boot/ -maxdepth 1 -type f \( -name "Image*" -o -name "*.img" \) -exec cp {} ./build_artifacts/ \;
