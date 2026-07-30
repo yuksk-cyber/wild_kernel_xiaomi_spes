@@ -38,12 +38,12 @@ jobs:
         sudo cp -rsf $CLANG_BIN/* /usr/bin/
         sudo rm -f /usr/bin/ld.lld
         sudo bash -c 'cat << "EOF" > /usr/bin/ld.lld
-#!/bin/bash
-if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then
-    echo "LLD 18.0.0 (compatible with GNU linkers)"
-    exit 0
-fi
-exec /usr/bin/lld "$@"
+            #!/bin/bash
+            if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then
+            echo "LLD 18.0.0 (compatible with GNU linkers)"
+        exit 0
+    fi
+    exec /usr/bin/lld "$@"
 EOF'
         sudo chmod +x /usr/bin/ld.lld
         
