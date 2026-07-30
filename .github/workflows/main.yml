@@ -54,9 +54,6 @@ jobs:
         echo "CONFIG_NOMOUNT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         make O=out ARCH=arm64 CC=clang ${{ env.DEFCONFIG }}
         make O=out ARCH=arm64 CC=clang olddefconfig
-        make O=out ARCH=arm64 CC=clang ${{ env.DEFCONFIG }}
-        make O=out ARCH=arm64 CC=clang olddefconfig
-        
         make -j$(nproc --all) O=out \
               ARCH=arm64 \
               CC=clang \
