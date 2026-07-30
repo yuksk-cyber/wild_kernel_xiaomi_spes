@@ -36,12 +36,13 @@ jobs:
       run: |
         CLANG_BIN=$(readlink -f $(find $(pwd)/clang -type d -name "bin" | head -n 1))
         ln -sf "$CLANG_BIN/lld" "$CLANG_BIN/ld.lld"
-        sudo ln -sf "$CLANG_BIN"/* /usr/local/bin/
+        echo "$CLANG_BIN" >> $GITHUB_PATH
 
     - name: Compile kernel
       run: |
         export ARCH=${{ env.ARCH }}
         export SUBARCH=${{ env.SUBARCH }}
+        
         sed -i 's/local short/return 0/g' scripts/setlocalversion     
         curl -LSs "https://raw.githubusercontent.com/xxblebleblexx/MultiSU/refs/heads/legacy/kernel/setup.sh" | bash -s legacy
         curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
@@ -52,17 +53,21 @@ jobs:
         echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_KSU_TAMPER_SYSCALL_TABLE=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_NOMOUNT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
-        
-        make O=out ARCH=arm64 LLVM=1 ${{ env.DEFCONFIG }}
-        make O=out ARCH=arm64 LLVM=1 olddefconfig
-        
+        make O=out ARCH=arm64 CC=clang ${{ env.DEFCONFIG }}
+        make O=out ARCH=arm64 CC=clang olddefconfig
         make -j$(nproc --all) O=out \
               ARCH=arm64 \
-              LLVM=1 \
-              LLVM_IAS=1 \
+              CC=clang \
+              HOSTCC=clang \
+              LD=ld.lld \
+              AR=llvm-ar \
+              NM=llvm-nm \
+              OBJCOPY=llvm-objcopy \
+              OBJDUMP=llvm-objdump \
+              STRIP=llvm-strip \
               CLANG_TRIPLE=aarch64-linux-gnu- \
               CROSS_COMPILE=aarch64-linux-gnu- \
-              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O3"
+              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2"
         
         mkdir -p build_artifacts
         find out/arch/${{ env.ARCH }}/boot/ -maxdepth 1 -type f \( -name "Image*" -o -name "*.img" \) -exec cp {} ./build_artifacts/ \;
