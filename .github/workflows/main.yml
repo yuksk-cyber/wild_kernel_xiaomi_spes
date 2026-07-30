@@ -36,7 +36,7 @@ jobs:
       run: |
         CLANG_BIN=$(readlink -f $(find $(pwd)/clang -type d -name "bin" | head -n 1))
         ln -sf "$CLANG_BIN/lld" "$CLANG_BIN/ld.lld"
-        sudo cp -rs $CLANG_BIN/* /usr/bin/
+        sudo cp -rsf $CLANG_BIN/* /usr/bin/
         
         export ARCH=${{ env.ARCH }}
         export SUBARCH=${{ env.SUBARCH }}
