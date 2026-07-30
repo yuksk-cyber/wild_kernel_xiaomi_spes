@@ -62,7 +62,6 @@ jobs:
               CC=clang \
               HOSTCC=clang \
               HOSTLD=ld \
-              LD=ld.lld \
               AR=llvm-ar \
               NM=llvm-nm \
               OBJCOPY=llvm-objcopy \
@@ -70,7 +69,8 @@ jobs:
               STRIP=llvm-strip \
               CLANG_TRIPLE=aarch64-linux-gnu- \
               CROSS_COMPILE=aarch64-linux-android- \
-              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2"
+              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fuse-ld=lld"
+              LDFLAGS="-fuse-ld=lld"
         
         echo "============================================="
         echo "          COLLECTING ALL COMPILED FILES      "
