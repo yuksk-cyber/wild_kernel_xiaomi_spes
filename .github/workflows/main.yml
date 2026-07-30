@@ -35,6 +35,8 @@ jobs:
     - name: Prepare Toolchain Environment
       run: |
         CLANG_BIN=$(readlink -f $(find $(pwd)/clang -type d -name "bin" | head -n 1))
+        ln -sf "$CLANG_BIN/lld" "$CLANG_BIN/ld.lld"
+        sudo ln -sf $CLANG_BIN/* /usr/bin/
         echo "$CLANG_BIN" >> $GITHUB_PATH
 
     - name: Compile kernel
@@ -59,6 +61,7 @@ jobs:
               CC=clang \
               HOSTCC=clang \
               HOSTLD=ld \
+              LD=ld.lld \
               AR=llvm-ar \
               NM=llvm-nm \
               OBJCOPY=llvm-objcopy \
