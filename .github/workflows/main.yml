@@ -76,7 +76,7 @@ jobs:
               STRIP=llvm-strip \
               CLANG_TRIPLE=aarch64-linux-gnu- \
               CROSS_COMPILE=aarch64-linux-gnu- \
-              KCFLAGS="-Wall -Wmissing-prototypes -Wstrict-prototypes -O2"
+              KCFLAGS="-O3 -pipe"
         
         mkdir -p build_artifacts
         find out/arch/${{ env.ARCH }}/boot/ -maxdepth 1 -type f \( -name "Image*" -o -name "*.img" \) -exec cp {} ./build_artifacts/ \;
