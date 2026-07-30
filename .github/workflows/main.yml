@@ -37,14 +37,9 @@ jobs:
         CLANG_BIN=$(readlink -f $(find $(pwd)/clang -type d -name "bin" | head -n 1))
         sudo cp -rsf $CLANG_BIN/* /usr/bin/
         sudo rm -f /usr/bin/ld.lld
-        sudo bash -c 'cat << "EOF" > /usr/bin/ld.lld
-            #!/bin/bash
-            if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then
-            echo "LLD 18.0.0 (compatible with GNU linkers)"
-        exit 0
-    fi
-    exec /usr/bin/lld "$@"
-EOF'
+        echo '#!/bin/bash' | sudo tee /usr/bin/ld.lld > /dev/null
+        echo 'if [ "$1" = "-v" ] || [ "$1" = "--version" ]; then echo "LLD 18.0.0 (compatible with GNU linkers)"; exit 0; fi' | sudo tee -a /usr/bin/ld.lld > /dev/null
+        echo 'exec /usr/bin/lld "$@"' | sudo tee -a /usr/bin/ld.lld > /dev/null
         sudo chmod +x /usr/bin/ld.lld
         
         echo "$CLANG_BIN" >> $GITHUB_PATH
