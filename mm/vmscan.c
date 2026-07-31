@@ -2586,18 +2586,6 @@ out:
 	}
 }
 
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_MTK_GMO_RAM_OPTIMIZE
-/*
- * When the length of inactive lru is smaller than 256(SWAP_CLUSTER_MAX << 3),
- * there is high risk to suffer from congestion wait.
- * For low-ram device, this value is suggested to be higher than 4 to keep away
- * from above situation while we have smaller sc->priority.
- */
-static int scan_anon_priority = 4;
-module_param_named(scan_anon_prio, scan_anon_priority, int, 0644);
-#endif
 #ifdef CONFIG_LRU_GEN
 
 #ifdef CONFIG_LRU_GEN_ENABLED
@@ -5235,7 +5223,6 @@ static void lru_gen_shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc
 
 #endif /* CONFIG_LRU_GEN */
 
->>>>>>> dc3dadfb7fcd (MultiGen-LRU: port MGLRU feature to 4.19 kernel)
 /*
  * This is a basic per-node page freer.  Used by both kswapd and direct reclaim.
  */
