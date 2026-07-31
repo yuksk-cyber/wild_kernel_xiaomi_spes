@@ -79,10 +79,10 @@ jobs:
               KCFLAGS="-O3 -pipe"
         
         mkdir -p build_artifacts
-        find out/arch/${{ env.ARCH }}/boot/ -maxdepth 1 -type f \( -name "Image*" -o -name "*.img" \) -exec cp {} ./build_artifacts/ \;
+        find out/arch/${{ env.ARCH }}/boot/ -maxdepth 1 -type f \( -name "Image.gz" -o -name "dtbo.img" \) -exec cp {} ./build_artifacts/ \;
 
         if [ -z "$(ls -A build_artifacts)" ]; then
-          echo "ERROR: No kernel artifacts found! Build failed."
+          echo "ERROR: Required kernel artifacts (Image.gz, dtbo.img) not found! Build failed."
           exit 1
         fi
 
