@@ -1,0 +1,29 @@
+name: Cherry-pick Remote Commit
+
+on:
+  workflow_dispatch:
+
+# ДАЁМ БОТУ ПРАВА НА ЗАПИСЬ В РЕПОЗИТОРИЙ
+permissions:
+  contents: write
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cherry-pick commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git remote add source https://github.com/xxblebleblexx/android_kernel_xiaomi_gale.git
+          git fetch source dc3dadfb7fcd386904dc2d907febf7e4f9de0dab
+
+          git cherry-pick dc3dadfb7fcd386904dc2d907febf7e4f9de0dab
+
+          git push origin HEAD:${{ github.ref_name }}
