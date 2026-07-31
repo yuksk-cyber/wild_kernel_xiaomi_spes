@@ -1,4 +1,4 @@
-name: Cherry-pick Remote Commit
+name: Cherry-pick Remote Commit (Test Branch)
 
 on:
   workflow_dispatch:
@@ -15,30 +15,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cherry-pick commit with conflict catch
+      - name: Cherry-pick to test branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          # Переключаемся на новую отдельную ветку для экспериментов
+          git checkout -b test-mglru
+
           git remote add source https://github.com/xxblebleblexx/android_kernel_xiaomi_gale.git
           git fetch source dc3dadfb7fcd386904dc2d907febf7e4f9de0dab
 
-          # Попытка сделать cherry-pick
+          # Запускаем cherry-pick
           git cherry-pick dc3dadfb7fcd386904dc2d907febf7e4f9de0dab || {
             echo "=================================================="
-            echo "⚠️ ОБНАРУЖЕН КОНФЛИКТ В mm/vmscan.c!"
+            echo "⚠️ ОБНАРУЖЕНЫ КОНФЛИКТЫ! Показываем vmscan.c:"
             echo "=================================================="
             
-            # Показываем строки конфликта и по 10 строк контекста до и после
             grep -C 10 -n "<<<<<<<" mm/vmscan.c || true
             
             echo "=================================================="
-            echo "Сохраняем файл с маркерами и коммитим..."
+            echo "Индексируем ВСЕ файлы и завершаем коммит..."
             echo "=================================================="
 
-            # Заставляем git закоммитить конфликтный файл с маркерами <<<<<<< / ======= / >>>>>>>
-            git add mm/vmscan.c
+            # Добавляем ВСЕ конфликтные файлы (vmscan.c, mmzone.h, Kconfig, dev.c)
+            git add .
             git -c core.editor=true cherry-pick --continue
           }
 
-          git push origin HEAD:${{ github.ref_name }}
+          # Пушим результат в НОВУЮ ветку test-mglru
+          git push origin test-mglru --force
