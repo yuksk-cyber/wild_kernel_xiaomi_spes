@@ -24,24 +24,14 @@ jobs:
           git checkout -b test-mglru
 
           git remote add source https://github.com/xxblebleblexx/android_kernel_xiaomi_gale.git
-          git fetch source dc3dadfb7fcd386904dc2d907febf7e4f9de0dab
+          git fetch source 2425c6c136937f39b971382bd0900bc09f6955f7
 
           # Запускаем cherry-pick
-          git cherry-pick dc3dadfb7fcd386904dc2d907febf7e4f9de0dab || {
-            echo "=================================================="
-            echo "⚠️ ОБНАРУЖЕНЫ КОНФЛИКТЫ! Показываем vmscan.c:"
-            echo "=================================================="
-            
-            grep -C 10 -n "<<<<<<<" mm/vmscan.c || true
-            
-            echo "=================================================="
-            echo "Индексируем ВСЕ файлы и завершаем коммит..."
-            echo "=================================================="
+          git cherry-pick 2425c6c136937f39b971382bd0900bc09f6955f7
 
-            # Добавляем ВСЕ конфликтные файлы (vmscan.c, mmzone.h, Kconfig, dev.c)
+            # Добавляем ВСЕ конфликтные файлы
             git add .
             git -c core.editor=true cherry-pick --continue
-          }
 
           # Пушим результат в НОВУЮ ветку test-mglru
           git push origin test-mglru --force
