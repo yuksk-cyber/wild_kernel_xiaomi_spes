@@ -1,4 +1,4 @@
-Name: Cherry-pick Remote Commit
+name: Cherry-pick Remote Commit
 
 on:
   workflow_dispatch:
