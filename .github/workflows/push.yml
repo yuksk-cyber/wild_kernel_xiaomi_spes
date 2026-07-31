@@ -1,9 +1,8 @@
-name: Cherry-pick Remote Commit
+Name: Cherry-pick Remote Commit
 
 on:
   workflow_dispatch:
 
-# ДАЁМ БОТУ ПРАВА НА ЗАПИСЬ В РЕПОЗИТОРИЙ
 permissions:
   contents: write
 
@@ -16,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cherry-pick commit
+      - name: Cherry-pick commit with conflict catch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -24,6 +23,22 @@ jobs:
           git remote add source https://github.com/xxblebleblexx/android_kernel_xiaomi_gale.git
           git fetch source dc3dadfb7fcd386904dc2d907febf7e4f9de0dab
 
-          git cherry-pick dc3dadfb7fcd386904dc2d907febf7e4f9de0dab
+          # Попытка сделать cherry-pick
+          git cherry-pick dc3dadfb7fcd386904dc2d907febf7e4f9de0dab || {
+            echo "=================================================="
+            echo "⚠️ ОБНАРУЖЕН КОНФЛИКТ В mm/vmscan.c!"
+            echo "=================================================="
+            
+            # Показываем строки конфликта и по 10 строк контекста до и после
+            grep -C 10 -n "<<<<<<<" mm/vmscan.c || true
+            
+            echo "=================================================="
+            echo "Сохраняем файл с маркерами и коммитим..."
+            echo "=================================================="
+
+            # Заставляем git закоммитить конфликтный файл с маркерами <<<<<<< / ======= / >>>>>>>
+            git add mm/vmscan.c
+            git -c core.editor=true cherry-pick --continue
+          }
 
           git push origin HEAD:${{ github.ref_name }}
