@@ -858,16 +858,6 @@ config GUP_BENCHMARK
 config ARCH_HAS_PTE_SPECIAL
 	bool
 
-<<<<<<< HEAD
-=======
-config MTK_MM_DEBUG
-	bool "For MTK MM subsystem debugging"
-	help
-	  This config is used for MTK MM subsystem debugging,
-	  sometimes we need to use BUG() to catch specific
-	  type of errors. Wrap the debug code with this config,
-	  so we can remove the debug code by disabling it.
-
 # multi-gen LRU {
 config LRU_GEN
 	bool "Multi-Gen LRU"
@@ -894,7 +884,6 @@ config LRU_GEN_STATS
 	  This option has a per-memcg and per-node memory overhead.
 # }
 
->>>>>>> dc3dadfb7fcd (MultiGen-LRU: port MGLRU feature to 4.19 kernel)
 endmenu
 
 config PROCESS_RECLAIM
