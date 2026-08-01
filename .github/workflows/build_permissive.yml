@@ -50,6 +50,13 @@ jobs:
         export SUBARCH=${{ env.SUBARCH }}
         
         sed -i 's/local short/return 0/g' scripts/setlocalversion     
+        curl -LSs "https://raw.githubusercontent.com/xxblebleblexx/MultiSU/refs/heads/legacy/kernel/setup.sh" | bash -s legacy
+        curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" | bash -s mainline
+        curl -LSs "https://raw.githubusercontent.com/xxblebleblexx/nomount-installer/refs/heads/installer/nomount.sh" | bash -s 4.19
+        echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_KSU_NEXT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
+        echo "CONFIG_NOMOUNT=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_SECURITY_SELINUX_DEVELOP=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_ALWAYS_PERMISSIVE=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
         echo "CONFIG_SECURITY_SELINUX_BOOTPARAM=y" >> arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG }}
