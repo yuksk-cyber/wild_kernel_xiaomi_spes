@@ -20,18 +20,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Переключаемся на новую отдельную ветку для экспериментов
           git checkout -b test-mglru
 
           git remote add source https://github.com/ZeroKelvinProject/Elea-4.19-android-bbr3.git
           git fetch source 0efb29d75d649ebc135f7f4f4247b4a227be52d9
 
-          # Запускаем cherry-pick
-          git cherry-pick 0efb29d75d649ebc135f7f4f4247b4a227be52d9 || true
+          if ! git cherry-pick 0efb29d75d649ebc135f7f4f4247b4a227be52d9; then
+          git add .
+          git -c core.editor=true cherry-pick --continue
+fi
 
-            # Добавляем ВСЕ конфликтные файлы
-            git add .
-            git -c core.editor=true cherry-pick --continue
-
-          # Пушим результат в НОВУЮ ветку test-mglru
           git push origin test-mglru --force
