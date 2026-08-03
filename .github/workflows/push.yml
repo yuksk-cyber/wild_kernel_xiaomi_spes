@@ -26,8 +26,8 @@ jobs:
           git fetch source 0efb29d75d649ebc135f7f4f4247b4a227be52d9
 
           if ! git cherry-pick 0efb29d75d649ebc135f7f4f4247b4a227be52d9; then
-          git add .
-          git -c core.editor=true cherry-pick --continue
+            git add .
+            git -c core.editor=true cherry-pick --continue
 fi
 
           git push origin test-mglru --force
