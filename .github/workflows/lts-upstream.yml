@@ -1,4 +1,4 @@
-name: Upstream LTS kernel
+name: Upstream LTS Kernel
 
 on:
   workflow_dispatch:
@@ -22,10 +22,10 @@ jobs:
 
       - name: Git config
         run: |
-          git config user.name "github-actions"
+          git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Add LTS repository
+      - name: Add LTS repository and fetch tags
         run: |
           git remote add kernel-lts $LTS_REPO
           git fetch kernel-lts --tags
@@ -37,25 +37,20 @@ jobs:
       - name: Generate stable patches
         run: |
           mkdir stable-patches
-
+          # Используем имя тегов без префикса репозитория
           git format-patch \
-          --output-directory stable-patches \
-          kernel-lts/v4.19.326..kernel-lts/v4.19.331
+            --output-directory stable-patches \
+            4.19.326..4.19.331
 
           ls -la stable-patches
 
       - name: Apply stable patches
         run: |
-          git am stable-patches/*.patch || {
-            echo "git am failed, trying 3-way apply"
-
-            git am --abort || true
-
-            for patch in stable-patches/*.patch; do
-              git apply --3way "$patch"
-              git add .
-              git commit -m "$(basename "$patch")"
-            done
+          # Включаем 3-way merge сразу в git am для автоматического разрешения некритичных конфликтов
+          git am -3 stable-patches/*.patch || {
+            echo "Failed to apply patches clean. Aborting merge to prevent broken state."
+            git am --abort
+            exit 1
           }
 
       - name: Check kernel version
@@ -64,4 +59,4 @@ jobs:
 
       - name: Push branch
         run: |
-          git push origin $NEW_BRANCH
+          git push -u origin $NEW_BRANCH
