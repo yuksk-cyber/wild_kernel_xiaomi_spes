@@ -1,0 +1,51 @@
+name: Apply Linux LTS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lts-update:
+    runs-on: ubuntu-latest
+
+    env:
+      NEW_BRANCH: lts-upstream
+      LTS_REPO: https://github.com/frstprjkt/kernel-lts.git
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Git config
+        run: |
+          git config user.name "github-actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add kernel-lts remote
+        run: |
+          git remote add kernel-lts $LTS_REPO
+          git fetch kernel-lts --tags
+
+      - name: Create new branch
+        run: |
+          git checkout -b $NEW_BRANCH
+
+      - name: Apply commits
+        run: |
+          git cherry-pick $(git rev-list --reverse v4.19.325..v4.19.331)
+
+      - name: Update version check
+        run: |
+          grep SUBLEVEL Makefile
+
+      - name: Commit result
+        run: |
+          git commit -am "Update kernel to Linux 4.19.331 LTS"
+
+      - name: Push branch
+        run: |
+          git push origin $NEW_BRANCH
