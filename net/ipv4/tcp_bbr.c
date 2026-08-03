@@ -3,7 +3,6 @@
  * BBR congestion control computes the sending rate based on the delivery
  * rate (throughput) estimated from ACKs. In a nutshell:
  *
-<<<<<<< HEAD
  *   On each ACK, update our model of the network path:
  *      bottleneck_bandwidth = windowed_max(delivered / elapsed, 10 round trips)
  *      min_rtt = windowed_min(rtt, 10 seconds)
@@ -14,7 +13,6 @@
  * although BBR may adjust the size of next send per ACK when loss is
  * observed, or adjust the sending rate if it estimates there is a
  * traffic policer, in order to keep the drop rate reasonable.
-=======
  * The model has both higher and lower bounds for the operating range:
  * lo: bw_lo, inflight_lo: conservative short-term lower bound
  * hi: bw_hi, inflight_hi: robust long-term upper bound
@@ -22,7 +20,6 @@
  * estimated BDP to improve coexistence with Reno/CUBIC; (b) bounded by
  * an interactive wall-clock time-scale to be more scalable and responsive
  * than Reno and CUBIC.
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
  *
  * Here is a state transition diagram for BBR:
  *
@@ -73,8 +70,6 @@
 #include <linux/random.h>
 #include <linux/win_minmax.h>
 
-<<<<<<< HEAD
-=======
 #include <trace/events/tcp.h>
 #include "tcp_dctcp.h"
 
@@ -87,7 +82,6 @@
 
 #define bbr_param(sk,name)	(bbr_ ## name)
 
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 /* Scale factor for rate in pkt/uSec unit to avoid truncation in bandwidth
  * estimation. The rate unit ~= (1500 bytes / 1 usec / 2^24) ~= 715 bps.
  * This handles bandwidths from 0.06pps (715bps) to 256Mpps (3Tbps) in a u32.
@@ -219,10 +213,6 @@ static const u32 bbr_ack_epoch_acked_reset_thresh = 1U << 20;
 /* Time period for clamping cwnd increment due to ack aggregation */
 static const u32 bbr_extra_acked_max_us = 100 * 1000;
 
-<<<<<<< HEAD
-static void bbr_check_probe_rtt_done(struct sock *sk);
-
-=======
 /* Flags to control BBR ECN-related behavior... */
 
 /* Ensure ACKs only ACK packets with consistent ECN CE status? */
@@ -442,8 +432,6 @@ static u32 bbr_min_tso_segs(struct sock *sk)
 	return sk->sk_pacing_rate < (bbr_min_tso_rate >> 3) ? 1 : 2;
 }
 
-<<<<<<< HEAD
-=======
 /* Custom tcp_tso_autosize() for BBR, used at transmit time to cap skb size. */
 static u32 bbr_tso_segs(struct sock *sk, unsigned int mss_now)
 {
@@ -451,7 +439,6 @@ static u32 bbr_tso_segs(struct sock *sk, unsigned int mss_now)
 }
 
 /* Like bbr_tso_segs(), using mss_cache, ignoring driver's sk_gso_max_size. */
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 static u32 bbr_tso_segs_goal(struct sock *sk)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
@@ -532,19 +519,11 @@ static u32 bbr_bdp(struct sock *sk, u32 bw, int gain)
 
 /* To achieve full performance in high-speed paths, we budget enough cwnd to
  * fit full-sized skbs in-flight on both end hosts to fully utilize the path:
-<<<<<<< HEAD
- *   - one skb in sending host Qdisc,
- *   - one skb in sending host TSO/GSO engine
- *   - one skb being received by receiver host LRO/GRO/delayed-ACK engine
- * Don't worry, at low rates (bbr_min_tso_rate) this won't bloat cwnd because
- * in such cases tso_segs_goal is 1. The minimum cwnd is 4 packets,
-=======
  * - one skb in sending host Qdisc,
  * - one skb in sending host TSO/GSO engine
  * - one skb being received by receiver host LRO/GRO/delayed-ACK engine
  * Don't worry, at low rates this won't bloat cwnd because
  * in such cases tso_segs_goal is small. The minimum cwnd is 4 packets,
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
  * which allows 2 outstanding 2-packet sequences, to try to keep pipe
  * full even with ACK-every-other-packet delayed ACKs.
  */
@@ -576,8 +555,6 @@ static u32 bbr_inflight(struct sock *sk, u32 bw, int gain)
 	return inflight;
 }
 
-<<<<<<< HEAD
-=======
 /* With pacing at lower layers, there's often less data "in the network" than
  * "in flight". With TSQ and departure time pacing at lower layers (e.g. fq),
  * we often have several skbs queued in the pacing layer with a pre-scheduled
@@ -611,7 +588,6 @@ static u32 bbr_packets_in_net_at_edt(struct sock *sk, u32 inflight_now)
 	return inflight_at_edt - interval_delivered;
 }
 
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 /* Find the cwnd increment based on estimate of ack aggregation */
 static u32 bbr_ack_aggregation_cwnd(struct sock *sk)
 {
