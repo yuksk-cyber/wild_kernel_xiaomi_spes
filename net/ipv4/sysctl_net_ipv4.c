@@ -52,15 +52,12 @@ static int ip_ping_group_range_max[] = { GID_T_MAX, GID_T_MAX };
 static int comp_sack_nr_max = 255;
 static u32 u32_max_div_HZ = UINT_MAX / HZ;
 static int one_day_secs = 24 * 3600;
-<<<<<<< HEAD
 static int tcp_delack_seg_min = TCP_DELACK_MIN;
 static int tcp_delack_seg_max = 60;
 static int tcp_use_userconfig_min;
 static int tcp_use_userconfig_max = 1;
-=======
 static int tcp_plb_max_rounds = 31;
 static int tcp_plb_max_cong_thresh = 256;
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 
 /* obsolete */
 static int sysctl_tcp_low_latency __read_mostly;
