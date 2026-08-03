@@ -28,6 +28,6 @@ jobs:
           if ! git cherry-pick 0efb29d75d649ebc135f7f4f4247b4a227be52d9; then
             git add .
             git -c core.editor=true cherry-pick --continue
-fi
+          fi
 
           git push origin test-mglru --force
