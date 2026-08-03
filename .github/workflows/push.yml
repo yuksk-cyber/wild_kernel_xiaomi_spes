@@ -27,7 +27,7 @@ jobs:
           git fetch source 1695f9f13bd8f17ca33249738204588b255902f4
 
           # Запускаем cherry-pick
-          git cherry-pick 1695f9f13bd8f17ca33249738204588b255902f4 || true
+          git cherry-pick -m 1695f9f13bd8f17ca33249738204588b255902f4 || true
 
             # Добавляем ВСЕ конфликтные файлы
             git add .
