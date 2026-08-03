@@ -1,4 +1,4 @@
-name: Apply Linux LTS
+name: Upstream LTS kernel
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  lts-update:
+  update-kernel:
     runs-on: ubuntu-latest
 
     env:
@@ -25,7 +25,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Add kernel-lts remote
+      - name: Add LTS repository
         run: |
           git remote add kernel-lts $LTS_REPO
           git fetch kernel-lts --tags
@@ -34,17 +34,33 @@ jobs:
         run: |
           git checkout -b $NEW_BRANCH
 
-      - name: Apply commits
+      - name: Generate stable patches
         run: |
-          git cherry-pick $(git rev-list --reverse v4.19.325..v4.19.331)
+          mkdir stable-patches
 
-      - name: Update version check
-        run: |
-          grep SUBLEVEL Makefile
+          git format-patch \
+          --output-directory stable-patches \
+          kernel-lts/v4.19.326..kernel-lts/v4.19.331
 
-      - name: Commit result
+          ls -la stable-patches
+
+      - name: Apply stable patches
         run: |
-          git commit -am "Update kernel to Linux 4.19.331 LTS"
+          git am stable-patches/*.patch || {
+            echo "git am failed, trying 3-way apply"
+
+            git am --abort || true
+
+            for patch in stable-patches/*.patch; do
+              git apply --3way "$patch"
+              git add .
+              git commit -m "$(basename "$patch")"
+            done
+          }
+
+      - name: Check kernel version
+        run: |
+          grep SUBLEVEL Makefile || true
 
       - name: Push branch
         run: |
