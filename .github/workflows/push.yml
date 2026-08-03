@@ -23,9 +23,9 @@ jobs:
           git checkout -b test-mglru
 
           git remote add source https://github.com/ZeroKelvinProject/Elea-4.19-android-bbr3.git
-          git fetch source 7b6b86a3133a864195571463544322f110276e9c
+          git fetch source 382bfff9818951178d272a99225aecb13239a537
 
-          if ! git cherry-pick 7b6b86a3133a864195571463544322f110276e9c; then
+          if ! git cherry-pick 382bfff9818951178d272a99225aecb13239a537; then
             git add .
             git -c core.editor=true cherry-pick --continue
           fi
