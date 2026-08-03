@@ -328,7 +328,6 @@ static bool bbr_can_use_ecn(const struct sock *sk)
 	       (tcp_sk(sk)->ecn_flags & TCP_ECN_LOW);
 }
 
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 /* Do we estimate that STARTUP filled the pipe? */
 static bool bbr_full_bw_reached(const struct sock *sk)
 {
@@ -1131,9 +1130,6 @@ static void bbr_update_min_rtt(struct sock *sk, const struct rate_sample *rs)
 
 static void bbr_update_model(struct sock *sk, const struct rate_sample *rs)
 {
-<<<<<<< HEAD
-	bbr_update_bw(sk, rs);
-=======
 	struct bbr *bbr = inet_csk_ca(sk);
 
 	switch (bbr->mode) {
@@ -2166,7 +2162,6 @@ static void bbr_update_model(struct sock *sk, const struct rate_sample *rs,
 			      struct bbr_context *ctx)
 {
 	bbr_update_congestion_signals(sk, rs, ctx);
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 	bbr_update_ack_aggregation(sk, rs);
 	bbr_update_cycle_phase(sk, rs);
 	bbr_check_full_bw_reached(sk, rs);
@@ -2174,9 +2169,6 @@ static void bbr_update_model(struct sock *sk, const struct rate_sample *rs,
 	bbr_update_min_rtt(sk, rs);
 }
 
-<<<<<<< HEAD
-static void bbr_main(struct sock *sk, const struct rate_sample *rs)
-=======
 /* Fast path for app-limited case.
  *
  * On each ack, we execute bbr state machine, which primarily consists of:
@@ -2203,15 +2195,12 @@ static void bbr_main(struct sock *sk, const struct rate_sample *rs)
  */
 static bool bbr_run_fast_path(struct sock *sk, bool *update_model,
 		const struct rate_sample *rs, struct bbr_context *ctx)
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 {
 	struct bbr *bbr = inet_csk_ca(sk);
 	u32 bw;
 
 	bbr_update_model(sk, rs);
-
-<<<<<<< HEAD
-=======
+	
 		if (bbr->mode == prev_mode &&
 		    bbr->min_rtt_us == prev_min_rtt_us &&
 		    bbr->try_fast_path) {
@@ -2253,7 +2242,6 @@ static void bbr_main(struct sock *sk, u32 ack, int flag,
 		bbr_update_model(sk, rs, &ctx);
 
 	bbr_update_gains(sk);
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 	bw = bbr_bw(sk);
 	bbr_set_pacing_rate(sk, bw, bbr->pacing_gain);
 	bbr_set_cwnd(sk, rs, rs->acked_sacked, bw, bbr->cwnd_gain);
@@ -2307,11 +2295,6 @@ static u32 bbr_sndbuf_expand(struct sock *sk)
 	return 3;
 }
 
-<<<<<<< HEAD
-/* In theory BBR does not need to undo the cwnd since it does not
- * always reduce cwnd on losses (see bbr_main()). Keep it for now.
- */
-=======
 /* Core TCP stack informs us that the given skb was just marked lost. */
 static void bbr_skb_marked_lost(struct sock *sk,
 					    const struct sk_buff *skb)
@@ -2362,7 +2345,6 @@ static void bbr_run_loss_probe_recovery(struct sock *sk)
 }
 
 /* Revert short-term model if current loss recovery event was spurious. */
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 static u32 bbr_undo_cwnd(struct sock *sk)
 {
 	struct bbr *bbr = inet_csk_ca(sk);
@@ -2373,11 +2355,7 @@ static u32 bbr_undo_cwnd(struct sock *sk)
 	return tcp_sk(sk)->snd_cwnd;
 }
 
-<<<<<<< HEAD
-/* Entering loss recovery, so save cwnd for when we exit or undo recovery. */
-=======
 /* Entering loss recovery, so save state for when we undo recovery. */
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 static u32 bbr_ssthresh(struct sock *sk)
 {
 	bbr_save_cwnd(sk);
@@ -2420,15 +2398,12 @@ static void bbr_set_state(struct sock *sk, u8 new_state)
 	}
 }
 
-<<<<<<< HEAD
-=======
 /* Wrapper to fix the incompatible function pointer type for cong_control in Kernel 4.19 */
 static void bbr_main_wrapper(struct sock *sk, const struct rate_sample *rs)
 {
 	bbr_main(sk, 0, 0, rs);
 }
 
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 static struct tcp_congestion_ops tcp_bbr_cong_ops __read_mostly = {
 	.flags		= TCP_CONG_NON_RESTRICTED,
 	.name		= "bbr",
@@ -2447,10 +2422,7 @@ static struct tcp_congestion_ops tcp_bbr_cong_ops __read_mostly = {
 static int __init bbr_register(void)
 {
 	BUILD_BUG_ON(sizeof(struct bbr) > ICSK_CA_PRIV_SIZE);
-<<<<<<< HEAD
-=======
 
->>>>>>> 1695f9f13bd8 (Merge pull request #1 from zesakain/lineage-23.2)
 	return tcp_register_congestion_control(&tcp_bbr_cong_ops);
 }
 
