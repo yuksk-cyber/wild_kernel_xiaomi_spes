@@ -146,19 +146,11 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
                         txn->comp = txn->comp;
         }
 
-        ret = ctrl->xfer_msg(ctrl, txn);
-        if (ret == -ETIMEDOUT) {
-                slim_free_txn_tid(ctrl, txn);
-        } else if (!ret && need_tid && !txn->msg->comp) {
-                unsigned long ms = txn->rl + HZ;
-
-                timeout = wait_for_completion_timeout(txn->comp,
-                                                      msecs_to_jiffies(ms));
-                if (!timeout) {
-                        ret = -ETIMEDOUT;
-                        slim_free_txn_tid(ctrl, txn);
-                }
-        }
+	ret = ctrl->xfer_msg(ctrl, txn);
+	if (ret == -ETIMEDOUT) {
+		slim_free_txn_tid(ctrl, txn);
+	} else if (!ret && need_tid && !txn->msg->comp) {
+		unsigned long ms = txn->rl + HZ;
 
         if (ret)
                 dev_err(ctrl->dev, "Tx:MT:0x%x, MC:0x%x, LA:0x%x failed:%d\n",

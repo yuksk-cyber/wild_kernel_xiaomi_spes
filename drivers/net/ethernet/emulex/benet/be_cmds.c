@@ -880,7 +880,7 @@ static int be_cmd_lock(struct be_adapter *adapter)
 static void be_cmd_unlock(struct be_adapter *adapter)
 {
 	if (use_mcc(adapter))
-		spin_unlock_bh(&adapter->mcc_lock);
+		return spin_unlock_bh(&adapter->mcc_lock);
 	else
 		return mutex_unlock(&adapter->mbox_lock);
 }
@@ -3858,6 +3858,7 @@ int be_cmd_set_mac_list(struct be_adapter *adapter, u8 *mac_array,
 err:
 	spin_unlock_bh(&adapter->mcc_lock);
 	dma_free_coherent(&adapter->pdev->dev, cmd.size, cmd.va, cmd.dma);
+	spin_unlock_bh(&adapter->mcc_lock);
 	return status;
 }
 

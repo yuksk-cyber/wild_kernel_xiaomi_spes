@@ -1447,9 +1447,6 @@ static void uvc_ctrl_send_events(struct uvc_fh *handle,
 		u32 changes = V4L2_EVENT_CTRL_CH_VALUE;
 
 		ctrl = uvc_find_control(handle->chain, xctrls[i].id, &mapping);
-		if (ctrl->entity != entity)
-			continue;
-
 		if (ctrl->info.flags & UVC_CTRL_FLAG_ASYNCHRONOUS)
 			/* Notification will be sent from an Interrupt event. */
 			continue;
@@ -1621,17 +1618,12 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
 
 		ctrl->dirty = 0;
 
-		if (!rollback && handle && !ret &&
+		if (ret < 0)
+			return ret;
+
+		if (!rollback && handle &&
 		    ctrl->info.flags & UVC_CTRL_FLAG_ASYNCHRONOUS)
 			uvc_ctrl_set_handle(handle, ctrl, handle);
-
-		if (ret < 0 && !rollback) {
-			/*
-			 * If we fail to set a control, we need to rollback
-			 * the next ones.
-			 */
-			rollback = 1;
-		}
 	}
 
 	if (ret)
@@ -1653,20 +1645,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
 	list_for_each_entry(entity, &chain->entities, chain) {
 		ret = uvc_ctrl_commit_entity(chain->dev, handle, entity,
 					     rollback);
-		if (ret < 0) {
-			/*
-			 * When we fail to commit an entity, we need to
-			 * restore the UVC_CTRL_DATA_BACKUP for all the
-			 * controls in the other entities, otherwise our cache
-			 * and the hardware will be out of sync.
-			 */
-			rollback = 1;
-
-			ret_out = ret;
-		} else if (ret > 0 && !rollback) {
-			uvc_ctrl_send_events(handle, entity, xctrls,
-					     xctrls_count);
-		}
+		if (ret < 0)
+			goto done;
 	}
 
 	mutex_unlock(&chain->ctrl_mutex);
