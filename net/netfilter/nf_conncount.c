@@ -476,6 +476,20 @@ restart:
 		rb_link_node_rcu(&rbconn->node, parent, rbnode);
 		rb_insert_color(&rbconn->node, root);
 	}
+
+	conn->tuple = *tuple;
+	conn->zone = *zone;
+	conn->cpu = raw_smp_processor_id();
+	conn->jiffies32 = (u32)jiffies;
+	memcpy(rbconn->key, key, sizeof(u32) * data->keylen);
+
+	nf_conncount_list_init(&rbconn->list);
+	list_add(&conn->node, &rbconn->list.head);
+	count = 1;
+	rbconn->list.count = count;
+
+	rb_link_node_rcu(&rbconn->node, parent, rbnode);
+	rb_insert_color(&rbconn->node, root);
 out_unlock:
 	if (refcounted)
 		nf_ct_put(ct);

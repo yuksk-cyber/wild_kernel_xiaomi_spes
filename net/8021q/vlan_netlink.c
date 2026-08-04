@@ -192,9 +192,10 @@ static int vlan_newlink(struct net *src_net, struct net_device *dev,
 	 * to call vlan_dev_free_egress_priority() to free memory.
 	 */
 	err = vlan_changelink(dev, tb, data, extack);
-	if (err)
-		return err;
-	err = register_vlan_dev(dev, extack);
+
+	if (!err)
+		err = register_vlan_dev(dev, extack);
+
 	if (err)
 		vlan_dev_free_egress_priority(dev);
 	return err;
