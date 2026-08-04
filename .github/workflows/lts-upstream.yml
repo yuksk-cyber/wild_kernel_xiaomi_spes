@@ -38,7 +38,7 @@ jobs:
       - name: Merge LTS Tag directly
         run: |
           # Сливаем релизный тег напрямую с приоритетом изменений из LTS (-X theirs)
-          git merge $TARGET_TAG -X theirs -m "Merge $TARGET_TAG from LTS upstream" || true
+          git merge $TARGET_TAG -X theirs -m "Merge $TARGET_TAG from LTS upstream"
 
           git status
 
@@ -48,5 +48,4 @@ jobs:
 
       - name: Push branch
         run: |
-            git commit -m 'Linux 4.19.326 (LTS)'
             git push -u origin $NEW_BRANCH --force
