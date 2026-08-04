@@ -33,7 +33,6 @@ jobs:
 
       - name: Create new branch
         run: |
-          git push origin --delete lts-upstream
           git checkout -B $NEW_BRANCH
 
       - name: Merge LTS Tag directly
