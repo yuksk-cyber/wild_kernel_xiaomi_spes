@@ -46,11 +46,15 @@ jobs:
 
       - name: Apply stable patches
         run: |
-          # Включаем 3-way merge сразу в git am для автоматического разрешения некритичных конфликтов
-          git apply -3 stable-patches/*.patch || true
+          # Запускаем цикл для поочередной обработки каждого патча
+          for patch in stable-patches/*.patch; do
+            echo "=== Applying: $(basename "$patch") ==="
+            # Передаем конкретный патч $patch с маленькой буквы git
+            git apply -3 "$patch" || true
+          done
 
-            git status
-            git add .
+          git status
+          git add .
 
       - name: Check kernel version
         run: |
@@ -58,5 +62,11 @@ jobs:
 
       - name: Push branch
         run: |
-          git commit -m "Linux 4.19.331 (LTS upstream)"
+          # Безопасный коммит: делаем коммит только при наличии индексированных изменений
+          if ! git diff --cached --quiet; then
+            git commit -m "Linux 4.19.331 (LTS upstream)"
+          else
+            echo "No new changes to commit."
+          fi
+
           git push -u origin $NEW_BRANCH
