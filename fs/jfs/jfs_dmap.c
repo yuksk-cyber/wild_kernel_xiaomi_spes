@@ -1894,10 +1894,8 @@ dbAllocCtl(struct bmap * bmp, s64 nblocks, int l2nb, s64 blkno, s64 * results)
 			return -EIO;
 		dp = (struct dmap *) mp->data;
 
-		if (dp->tree.budmin < 0) {
-			release_metapage(mp);
+		if (dp->tree.budmin < 0)
 			return -EIO;
-		}
 
 		/* try to allocate the blocks.
 		 */
