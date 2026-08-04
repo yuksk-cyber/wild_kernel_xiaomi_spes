@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NEW_BRANCH: lts-upstream
+      NEW_BRANCH: lts-331
       LTS_REPO: https://github.com/frstprjkt/kernel-lts.git
+      TARGET_TAG: v4.19.331
 
     steps:
       - name: Checkout source
@@ -32,29 +33,15 @@ jobs:
 
       - name: Create new branch
         run: |
-          git checkout -b $NEW_BRANCH
+          git checkout -D lts-upstream
+          git checkout -B $NEW_BRANCH
 
-      - name: Generate stable patches
+      - name: Merge LTS Tag directly
         run: |
-          mkdir stable-patches
-          # Используем имя тегов без префикса репозитория
-          git format-patch \
-            --output-directory stable-patches \
-            v4.19.326..v4.19.331
-
-          ls -la stable-patches
-
-      - name: Apply stable patches
-        run: |
-          # Запускаем цикл для поочередной обработки каждого патча
-          for patch in stable-patches/*.patch; do
-            echo "=== Applying: $(basename "$patch") ==="
-            # Передаем конкретный патч $patch с маленькой буквы git
-            git apply -3 "$patch" || true
-          done
+          # Сливаем релизный тег напрямую с приоритетом изменений из LTS (-X theirs)
+          git merge $TARGET_TAG -X theirs -m "Merge $TARGET_TAG from LTS upstream" || true
 
           git status
-          git add .
 
       - name: Check kernel version
         run: |
@@ -62,11 +49,9 @@ jobs:
 
       - name: Push branch
         run: |
-          # Безопасный коммит: делаем коммит только при наличии индексированных изменений
-          if ! git diff --cached --quiet; then
-            git commit -m "Linux 4.19.331 (LTS upstream)"
+          if ! git diff --cached --quiet || [ $(git rev-parse HEAD) != $(git rev-parse origin/$NEW_BRANCH 2>/dev/null) ]; then
+            git commit -m 'Merge tag "Linux 4.19.331 (LTS)"'
+            git push -u origin $NEW_BRANCH --force
           else
-            echo "No new changes to commit."
+            echo "No new changes to push."
           fi
-
-          git push -u origin $NEW_BRANCH
