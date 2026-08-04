@@ -40,7 +40,7 @@ jobs:
           # Используем имя тегов без префикса репозитория
           git format-patch \
             --output-directory stable-patches \
-            4.19.326..4.19.331
+            v4.19.326..v4.19.331
 
           ls -la stable-patches
 
