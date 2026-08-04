@@ -13,7 +13,7 @@ jobs:
     env:
       NEW_BRANCH: lts-331
       LTS_REPO: https://github.com/frstprjkt/kernel-lts.git
-      TARGET_TAG: v4.19.328
+      TARGET_TAG: v4.19.329
 
     steps:
       - name: Checkout source
