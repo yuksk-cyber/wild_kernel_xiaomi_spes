@@ -20,7 +20,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git checkout -b test-mglru
+          git checkout -B chrysalis
 
           git remote add source https://github.com/xxblebleblexx/android_kernel_xiaomi_gale.git
           git fetch source 044910e14a7fcb54083fe1ab311d2cf8e0617adf
