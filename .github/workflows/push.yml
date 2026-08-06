@@ -22,12 +22,12 @@ jobs:
 
           git checkout -b test-mglru
 
-          git remote add source https://github.com/ZeroKelvinProject/Elea-4.19-android-bbr3.git
-          git fetch source 1695f9f13bd8f17ca33249738204588b255902f4
+          git remote add source https://github.com/xxblebleblexx/android_kernel_xiaomi_gale.git
+          git fetch source 044910e14a7fcb54083fe1ab311d2cf8e0617adf
 
-          if ! git cherry-pick -m 1 1695f9f13bd8f17ca33249738204588b255902f4; then
+          if ! git cherry-pick -m 1 044910e14a7fcb54083fe1ab311d2cf8e0617adf; then
             git add .
             git -c core.editor=true cherry-pick --continue
           fi
 
-          git push origin test-mglru --force
+          git push origin chrysalis --force
