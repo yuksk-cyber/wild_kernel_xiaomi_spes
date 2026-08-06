@@ -712,7 +712,6 @@ static const struct midr_range arm64_harden_el2_vectors[] = {
 
 #endif
 
-<<<<<<< HEAD
 #ifdef CONFIG_ARM64_ERRATUM_858921
 
 static const struct midr_range arm64_workaround_858921_cpus[] = {
@@ -747,7 +746,6 @@ static const struct midr_range arm64_workaround_845719_cpus[] = {
 	{},
 };
 
-=======
 #ifdef CONFIG_ARM64_WORKAROUND_REPEAT_TLBI
 static const struct arm64_cpu_capabilities arm64_repeat_tlbi_list[] = {
 #ifdef CONFIG_QCOM_FALKOR_ERRATUM_1009
@@ -794,7 +792,6 @@ static const struct arm64_cpu_capabilities arm64_repeat_tlbi_list[] = {
 #endif
 	{}
 };
->>>>>>> 044910e14a7f (Merge branch 'linux-4.19.y-st' into linux-4.19.y-cip)
 #endif
 
 #ifdef CONFIG_ARM64_ERRATUM_1742098
