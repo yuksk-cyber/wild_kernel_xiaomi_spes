@@ -3188,16 +3188,12 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
 	return 0;
 }
 
-<<<<<<< HEAD
-unsigned long to_ratio(u64 period, u64 runtime)
-=======
 void sched_post_fork(struct task_struct *p)
 {
 	uclamp_post_fork(p);
 }
 
 u64 to_ratio(u64 period, u64 runtime)
->>>>>>> 044910e14a7f (Merge branch 'linux-4.19.y-st' into linux-4.19.y-cip)
 {
 	if (runtime == RUNTIME_INF)
 		return BW_UNIT;
