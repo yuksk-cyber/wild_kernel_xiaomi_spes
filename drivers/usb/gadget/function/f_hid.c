@@ -1353,8 +1353,6 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
 	}
 	hidg->use_out_ep = !opts->no_out_endpoint;
 
-<<<<<<< HEAD
-=======
 	++opts->refcnt;
 	/* HACK, replace content, duplicate code from above */
 	hidg->bInterfaceSubClass = hid_data.subclass;
@@ -1371,7 +1369,6 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
 	}
 
 
->>>>>>> 044910e14a7f (Merge branch 'linux-4.19.y-st' into linux-4.19.y-cip)
 	mutex_unlock(&opts->lock);
 
 	hidg->func.name    = "hid";
