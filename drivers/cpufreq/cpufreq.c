@@ -44,7 +44,7 @@ static inline bool policy_is_inactive(struct cpufreq_policy *policy)
 	return cpumask_empty(policy->cpus);
 }
 
-static unsigned int min_limit[2] = {691200, 806400}
+static unsigned int min_limit[2] = {691200, 806400};
 
 static int get_index_by_cpu(const unsigned int cpu)
 {
